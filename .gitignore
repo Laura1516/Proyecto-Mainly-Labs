@@ -1,0 +1,56 @@
+render_template.py
+output.html
+
+# Python / Django
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.py[cod]
+*$py.class
+*.sqlite3
+*.log
+
+# Env files
+.env
+
+
+# Virtual env
+venv/
+.venv/
+.venv
+env/
+ENV/
+.envrc
+
+# IDE
+.idea/
+.vscode/
+
+
+# Django
+*.log
+*.pot
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+static/
+
+
+
+# Docker
+*.pid
+*.seed
+*.bak
+*.swp
+*.swo
+*.orig
+*.tmp
+*.db
+docker-compose.override.yml
+
+
+# MacOS
+.DS_Store
+
