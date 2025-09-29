@@ -1,0 +1,239 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  /* ADMIN HEADER — blue */
+  .header {
+    background: linear-gradient(180deg,#033c8c,#032b66) !important;
+  }
+
+  /* SEARCH */
+  .search-bar {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 24px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  /* QUICK LINKS (chips) */
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .quick-link {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:8px;
+    padding:10px;
+    background:#fff;
+    border-radius:12px;
+    border:1px solid #d9e2f3;
+    color:#033c8c;
+    text-decoration:none;
+    font-weight:600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: background .2s, color .2s;
+  }
+  .quick-link:hover {
+    background:#eaf1fb;
+    color:#021e4f;
+  }
+
+  /* WIDGETS (admin style) */
+  .widgets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .widget {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid #d9e2f3;    /* blue frame */
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+    transition: background .2s;
+  }
+  .widget:hover {
+    background:#f5f9ff;
+  }
+  .widget h4 {
+    margin:0 0 10px;
+    font-size:15px;
+    color:#033c8c;
+    font-weight:600;
+  }
+  .widget p, .widget li {
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* MAIN GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .news, .calendar {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.06);
+  }
+
+  /* CARDS */
+  .cards {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:16px;
+    margin-top:20px;
+  }
+  .card {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+  }
+  .card-header {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .card .icon { font-size:20px; }
+  .card h3 { margin:0; font-size:16px; }
+  .card a {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:8px 0;
+    color:#033c8c;
+    text-decoration:none;
+    font-weight:500;
+    transition: color .2s;
+  }
+  .card a:hover { text-decoration:underline; color:#021e4f; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+    .content-grid { grid-template-columns: 1fr; }
+    .widgets { grid-template-columns: 1fr; }
+    .quick-links { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<!-- SEARCH -->
+<input type="search" class="search-bar" placeholder="🔍 Buscar usuarios, proyectos, reportes..." aria-label="buscar">
+
+<!-- CHIPS -->
+<div class="quick-links" role="navigation" aria-label="accesos rápidos admin">
+  <a class="quick-link" href="{% url 'create_ldap_user' %}">➕ Crear usuario</a>
+  <a class="quick-link" href="{% url 'list_ldap_users' %}">👥 Ver usuarios</a>
+  <a class="quick-link" href="#">📂 Crear proyecto</a>
+  <a class="quick-link" href="#">📊 Ver KPIs</a>
+  <a class="quick-link" href="#">⚙️ Configuración</a>
+</div>
+
+<!-- WIDGETS -->
+<div class="widgets" role="region" aria-label="mini widgets admin">
+  <div class="widget">
+    <h4>Resumen global</h4>
+    <p>👥 Usuarios activos: <strong>124</strong></p>
+    <p>📂 Proyectos en curso: <strong>18</strong></p>
+  </div>
+
+  <div class="widget">
+    <h4>Próximos eventos corporativos</h4>
+    <ul style="margin:0; padding-left:18px;">
+      <li>🎉 Fiesta anual — 30/07</li>
+      <li>📢 Asamblea general — 15/08</li>
+    </ul>
+  </div>
+
+  <div class="widget">
+    <h4>KPIs clave</h4>
+    <p>📊 Rotación personal: <strong>3%</strong></p>
+    <p>⏱️ Horas trabajadas globales: <strong>1520h</strong></p>
+  </div>
+
+  <div class="widget">
+    <h4>Sugerencias pendientes</h4>
+    <p>💡 Ideas nuevas: <strong>12</strong></p>
+    <p>🗳️ Votaciones abiertas: <strong>3</strong></p>
+  </div>
+</div>
+
+<!-- NEWS + CALENDAR -->
+<div class="content-grid">
+  <section class="news" aria-labelledby="news-title">
+    <h2 id="news-title">Noticias y Comunicados</h2>
+    <ul>
+      <li><b>15/07:</b> Nuevo plan estratégico publicado.</li>
+      <li><b>12/07:</b> Actualización en políticas de seguridad.</li>
+      <li><b>10/07:</b> Integración con nuevo sistema de nóminas.</li>
+    </ul>
+  </section>
+
+  <aside class="calendar" aria-labelledby="calendar-title">
+    <h2 id="calendar-title">Julio 2025</h2>
+    <div style="min-height:180px; display:flex; align-items:center; justify-content:center; color:#666;">
+      [Calendario aquí]
+    </div>
+  </aside>
+</div>
+
+<!-- CARDS -->
+<section class="cards" aria-label="quick cards admin">
+  <div class="card">
+    <div class="card-header"><span class="icon">👥</span><h3>Gestión de usuarios</h3></div>
+    <a href="{% url 'create_ldap_user' %}">➕ Crear usuario</a>
+    <a href="{% url 'list_ldap_users' %}">👥 Ver usuarios LDAP</a>
+    <a href="#">🔑 Asignar roles</a>
+    <a href="#">🚫 Activar/Desactivar</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📂</span><h3>Gestión de proyectos</h3></div>
+    <a href="#">📂 Crear proyecto</a>
+    <a href="#">👨‍💼 Asignar responsable</a>
+    <a href="#">📊 Estado general</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📊</span><h3>Supervisión global</h3></div>
+    <a href="#">📈 Panel de KPIs</a>
+    <a href="#">📉 Informes generales</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">🏢</span><h3>Gestión organizacional</h3></div>
+    <a href="#">🎉 Crear evento corporativo</a>
+    <a href="#">📰 Publicar noticia</a>
+    <a href="#">💡 Revisar sugerencias</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">⚙️</span><h3>Configuración del sistema</h3></div>
+    <a href="#">⚙️ Preferencias</a>
+    <a href="#">🔒 Seguridad</a>
+    <a href="#">🔗 Integraciones</a>
+  </div>
+</section>
+
+{% endblock %}

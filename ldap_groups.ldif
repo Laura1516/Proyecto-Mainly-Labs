@@ -1,0 +1,59 @@
+# Groups organizational unit
+dn: ou=groups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+# Active users group
+dn: cn=active,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: active
+description: Active users
+member: uid=juanrra,ou=users,dc=example,dc=com
+member: uid=Ana,ou=users,dc=example,dc=com
+member: uid=Helen,ou=users,dc=example,dc=com
+member: uid=Jackson,ou=users,dc=example,dc=com
+member: uid=adminuser,ou=users,dc=example,dc=com
+
+# Staff group
+dn: cn=staff,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: staff
+description: Staff members
+member: uid=juanrra,ou=users,dc=example,dc=com
+member: uid=adminuser,ou=users,dc=example,dc=com
+
+# Superuser group
+dn: cn=superuser,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: superuser
+description: Superusers
+member: uid=adminuser,ou=users,dc=example,dc=com
+
+# Admin role group
+dn: cn=admin,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: admin
+description: Admin role
+member: uid=adminuser,ou=users,dc=example,dc=com
+
+# HR role group
+dn: cn=hr,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: hr
+description: HR role
+member: uid=Ana,ou=users,dc=example,dc=com
+
+# Tech role group
+dn: cn=tech,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: tech
+description: Technical role
+member: uid=juanrra,ou=users,dc=example,dc=com
+member: uid=Jackson,ou=users,dc=example,dc=com
+
+# User role group
+dn: cn=user,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: user
+description: Regular user role
+member: uid=Helen,ou=users,dc=example,dc=com

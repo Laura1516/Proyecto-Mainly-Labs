@@ -1,0 +1,260 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Técnico Dashboard — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  /* TECHNICAL HEADER — violet */
+  .header {
+    background: linear-gradient(180deg,#5a189a,#3c096c) !important;
+  }
+
+  /* SEARCH */
+  .search-bar {
+    width: 100%;
+    padding: 12px 18px;
+    border-radius: 24px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+    font-size: 15px;
+    margin-bottom: 16px;
+  }
+
+  /* QUICK LINKS (chips) */
+  .quick-links {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .quick-link {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    gap:8px;
+    padding:10px;
+    background:#fff;
+    border-radius:12px;
+    border:1px solid #e0d7f7;
+    color:#5a189a;
+    text-decoration:none;
+    font-weight:600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: background .2s, color .2s;
+  }
+  .quick-link:hover {
+    background:#f3e9ff;
+    color:#3c096c;
+  }
+
+  /* WIDGETS (technical style) */
+  .widgets {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .widget {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    border:1px solid #e0d7f7;
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+    transition: background .2s;
+  }
+  .widget:hover {
+    background:#f8f2ff;
+  }
+  .widget h4 {
+    margin:0 0 10px;
+    font-size:15px;
+    color:#5a189a;
+    font-weight:600;
+  }
+  .widget p, .widget li {
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* MAIN GRID */
+  .content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  .news, .calendar {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.06);
+  }
+
+  /* CARDS */
+  .cards {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:16px;
+    margin-top:20px;
+  }
+  .card {
+    background:#fff;
+    padding:16px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+  }
+  .card-header {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .card .icon { font-size:20px; }
+  .card h3 { margin:0; font-size:16px; }
+  .card a {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin:8px 0;
+    color:#5a189a;
+    text-decoration:none;
+    font-weight:500;
+    transition: color .2s;
+  }
+  .card a:hover { text-decoration:underline; color:#3c096c; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 900px) {
+    .cards { grid-template-columns: 1fr; }
+    .content-grid { grid-template-columns: 1fr; }
+    .widgets { grid-template-columns: 1fr; }
+    .quick-links { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<!-- SEARCH -->
+<input type="search" class="search-bar" placeholder="🔍 Buscar proyectos, manuales, incidencias..." aria-label="buscar">
+
+<!-- CHIPS -->
+<div class="quick-links" role="navigation" aria-label="accesos rápidos técnico">
+  <a class="quick-link" href="#">📂 Nuevo proyecto</a>
+  <a class="quick-link" href="#">🛠️ Tareas</a>
+  <a class="quick-link" href="#">📘 Biblioteca</a>
+  <a class="quick-link" href="#">📑 Subir BOM</a>
+  <a class="quick-link" href="#">📈 KPIs técnicos</a>
+</div>
+
+<!-- WIDGETS -->
+<div class="widgets" role="region" aria-label="mini widgets técnico">
+  <div class="widget">
+    <h4>Mi carga actual</h4>
+    <p>🛠️ Proyectos activos: <strong>4</strong></p>
+    <p>📋 Tareas pendientes: <strong>12</strong></p>
+  </div>
+
+  <div class="widget">
+    <h4>Próximas entregas</h4>
+    <ul style="margin:0; padding-left:18px;">
+      <li>📅 Diseño PCB — 20/09</li>
+      <li>🚀 Integración módulo — 25/09</li>
+    </ul>
+  </div>
+
+  <div class="widget">
+    <h4>Incidencias abiertas</h4>
+    <p>⚠️ Críticas: <strong>2</strong></p>
+    <p>🔧 Totales: <strong>7</strong></p>
+  </div>
+
+  <div class="widget">
+    <h4>Formación técnica</h4>
+    <p>📖 Cursos activos: <strong>3</strong></p>
+    <p>🎓 Certificados: <strong>5</strong></p>
+  </div>
+</div>
+
+<!-- NEWS + CALENDAR -->
+<div class="content-grid">
+  <section class="news" aria-labelledby="news-title">
+    <h2 id="news-title">Actualizaciones Técnicas</h2>
+    <ul>
+      <li><b>15/09:</b> Nuevo estándar ISO disponible en biblioteca.</li>
+      <li><b>12/09:</b> Revisión de seguridad en línea de producción.</li>
+      <li><b>10/09:</b> Curso de soldadura avanzada abierto.</li>
+    </ul>
+  </section>
+
+  <aside class="calendar" aria-labelledby="calendar-title">
+    <h2 id="calendar-title">Septiembre 2025</h2>
+    <div style="min-height:180px; display:flex; align-items:center; justify-content:center; color:#666;">
+      [Calendario aquí]
+    </div>
+  </aside>
+</div>
+
+<!-- CARDS -->
+<section class="cards" aria-label="quick cards técnico">
+  <div class="card">
+    <div class="card-header"><span class="icon">📂</span><h3>Proyectos</h3></div>
+    <a href="#">➕ Crear proyecto</a>
+    <a href="#">📊 Ver proyectos</a>
+    <a href="#">🛠️ Mis asignaciones</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">🛠️</span><h3>Tareas</h3></div>
+    <a href="#">📋 Pendientes</a>
+    <a href="#">✅ Finalizadas</a>
+    <a href="#">⚠️ Incidencias</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📘</span><h3>Biblioteca Técnica</h3></div>
+    <a href="#">📘 Manuales</a>
+    <a href="#">📐 Normativas</a>
+    <a href="#">📄 Plantillas</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">💼</span><h3>Compras Técnicas</h3></div>
+    <a href="#">📑 Subir BOM</a>
+    <a href="#">📦 Seguimiento</a>
+    <a href="#">📊 Consumos</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">🎓</span><h3>Formación</h3></div>
+    <a href="#">📖 Cursos</a>
+    <a href="#">📈 Progreso</a>
+    <a href="#">📜 Certificados</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📈</span><h3>KPIs Técnicos</h3></div>
+    <a href="#">📊 Producción</a>
+    <a href="#">🚀 Progreso proyectos</a>
+    <a href="#">⚠️ Incidencias</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">🎫</span><h3>Soporte Técnico</h3></div>
+    <a href="#">📝 Tickets abiertos</a>
+    <a href="#">✅ Resueltos</a>
+    <a href="#">📊 Estadísticas</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header"><span class="icon">📅</span><h3>Reuniones</h3></div>
+    <a href="#">📅 Convocar</a>
+    <a href="#">📝 Actas</a>
+    <a href="#">📌 Agenda</a>
+  </div>
+</section>
+
+{% endblock %}

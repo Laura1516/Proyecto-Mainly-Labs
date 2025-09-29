@@ -1,0 +1,56 @@
+{% extends "base/base_form.html" %}
+
+{% block title %}Login — Mainly Labs{% endblock %}
+{% block subtitle %}Inicia sesión{% endblock %}
+
+{% block content %}
+<!-- Login form container -->
+<form method="post" novalidate class="login-form">
+  {% csrf_token %}
+
+  <!-- Display non-field errors -->
+  {% if form.non_field_errors %}
+    <div class="error">
+      {% for err in form.non_field_errors %}
+        {{ err }}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Username / email field -->
+  <div class="form-group">
+    {{ form.username }}
+    {% for e in form.username.errors %}
+      <div class="error">{{ e }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Password field -->
+  <div class="form-group">
+    {{ form.password }}
+    {% for e in form.password.errors %}
+      <div class="error">{{ e }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Forgot password link -->
+  <p class="help" style="margin-bottom: 24px;">
+    <a href="{% url 'password_reset' %}">¿Olvidaste tu contraseña?</a>
+  </p>
+
+  <!-- Submit button -->
+  <button class="btn" type="submit">Iniciar sesión</button>
+</form>
+{% endblock %}
+
+{% block footer %}
+<!-- Optional footer for additional links or info -->
+<p class="help">
+  Contacta a tu administrador si no tienes acceso.
+</p>
+{% endblock %}
+
+
+
+
+

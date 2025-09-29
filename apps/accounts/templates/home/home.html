@@ -1,0 +1,106 @@
+{% extends "base_generic.html" %}
+{% block title %}Inicio — Mainly Labs{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="jumbotron bg-white p-5 rounded shadow-sm">
+            <h1 class="display-4">Bienvenido a Mainly Labs</h1>
+            <p class="lead">
+                Sistema de gestión empresarial con autenticación LDAP integrada.
+            </p>
+            <hr class="my-4">
+            
+            {% if user.is_authenticated %}
+                <div class="alert alert-success">
+                    <h4 class="alert-heading">¡Hola, {{ user.username }}!</h4>
+                    <p>Has iniciado sesión correctamente con tu cuenta LDAP.</p>
+                    <p class="mb-0">
+                        <strong>Rol:</strong> {{ user.get_role_display }}<br>
+                        <strong>Email:</strong> {{ user.email|default:"No configurado" }}<br>
+                        <strong>Tipo de cuenta:</strong> 
+                        {% if user.is_superuser %}
+                            Superusuario
+                        {% elif user.is_staff %}
+                            Staff
+                        {% else %}
+                            Usuario
+                        {% endif %}
+                    </p>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    {% if user.role == 'admin' %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'admin_dashboard' %}" role="button">
+                            Ir al Dashboard Admin
+                        </a>
+                    {% elif user.role == 'hr' %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'hr_dashboard' %}" role="button">
+                            Ir al Dashboard HR
+                        </a>
+                    {% elif user.role == 'tech' %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'tech_dashboard' %}" role="button">
+                            Ir al Dashboard Tech
+                        </a>
+                    {% else %}
+                        <a class="btn btn-primary btn-lg" href="{% url 'user_dashboard' %}" role="button">
+                            Ir al Dashboard
+                        </a>
+                    {% endif %}
+                    <a class="btn btn-outline-secondary btn-lg" href="{% url 'profile' %}" role="button">
+                        Ver Perfil
+                    </a>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">Acceso requerido</h4>
+                    <p>Para acceder al sistema, inicia sesión con tu cuenta LDAP.</p>
+                </div>
+                
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">
+                        Iniciar Sesión LDAP
+                    </a>
+                    <a class="btn btn-outline-secondary btn-lg" href="{% url 'register' %}" role="button">
+                        Crear Cuenta Local
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        
+        {% if user.is_authenticated %}
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Gestión de Proyectos</h5>
+                        <p class="card-text">Administra proyectos y tareas del equipo.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Recursos Humanos</h5>
+                        <p class="card-text">Gestión de personal y recursos.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Asistencia</h5>
+                        <p class="card-text">Control de asistencia y horarios.</p>
+                        <a href="#" class="btn btn-sm btn-outline-primary">Acceder</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+

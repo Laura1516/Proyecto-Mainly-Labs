@@ -1,0 +1,238 @@
+# Users Structure
+dn: ou=users,dc=example,dc=com
+objectClass: organizationalUnit
+ou: users
+
+# Groups Structure
+dn: ou=groups,dc=example,dc=com
+objectClass: organizationalUnit
+ou: groups
+
+# Basic Groups
+dn: cn=active,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: active
+member: uid=admin,ou=users,dc=example,dc=com
+
+dn: cn=staff,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: staff
+member: uid=admin,ou=users,dc=example,dc=com
+
+dn: cn=superuser,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: superuser
+member: uid=admin,ou=users,dc=example,dc=com
+
+# Role-based Groups
+dn: cn=admin,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: admin
+member: uid=admin,ou=users,dc=example,dc=com
+member: uid=juanrra,ou=users,dc=example,dc=com
+member: uid=adminuser,ou=users,dc=example,dc=com
+
+dn: cn=hr,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: hr
+member: uid=Helen,ou=users,dc=example,dc=com
+member: uid=Ana,ou=users,dc=example,dc=com
+
+dn: cn=tech,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: tech
+member: uid=Jackson,ou=users,dc=example,dc=com
+member: uid=jorge,ou=users,dc=example,dc=com
+member: uid=matias,ou=users,dc=example,dc=com
+
+dn: cn=user,ou=groups,dc=example,dc=com
+objectClass: groupOfNames
+cn: user
+member: uid=testuser,ou=users,dc=example,dc=com
+member: uid=emilio,ou=users,dc=example,dc=com
+member: uid=pepe,ou=users,dc=example,dc=com
+member: uid=pedro,ou=users,dc=example,dc=com
+member: uid=paquito,ou=users,dc=example,dc=com
+
+# Users
+dn: uid=admin,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: admin
+cn: Administrator
+sn: Administrator
+givenName: Admin
+mail: admin@example.com
+userPassword: admin123
+uidNumber: 1000
+gidNumber: 1000
+homeDirectory: /home/admin
+loginShell: /bin/bash
+
+dn: uid=testuser,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: testuser
+cn: Test User
+sn: User
+givenName: Test
+mail: testuser@example.com
+userPassword: testpass123
+uidNumber: 1010
+gidNumber: 1010
+homeDirectory: /home/testuser
+loginShell: /bin/bash
+
+dn: uid=juanrra,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: juanrra
+cn: Juan Rodriguez
+sn: Rodriguez
+givenName: Juan
+mail: juanrra@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1001
+gidNumber: 1001
+homeDirectory: /home/juanrra
+loginShell: /bin/bash
+
+dn: uid=adminuser,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: adminuser
+cn: Admin User
+sn: User
+givenName: Admin
+mail: admin@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1002
+gidNumber: 1002
+homeDirectory: /home/adminuser
+loginShell: /bin/bash
+
+dn: uid=Helen,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: Helen
+cn: Helen Smith
+sn: Smith
+givenName: Helen
+mail: helen@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1003
+gidNumber: 1003
+homeDirectory: /home/Helen
+loginShell: /bin/bash
+
+dn: uid=Ana,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: Ana
+cn: Ana Garcia
+sn: Garcia
+givenName: Ana
+mail: ana@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1004
+gidNumber: 1004
+homeDirectory: /home/Ana
+loginShell: /bin/bash
+
+dn: uid=Jackson,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: Jackson
+cn: Jackson Brown
+sn: Brown
+givenName: Jackson
+mail: jackson@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1005
+gidNumber: 1005
+homeDirectory: /home/Jackson
+loginShell: /bin/bash
+
+dn: uid=jorge,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: jorge
+cn: Jorge Martinez
+sn: Martinez
+givenName: Jorge
+mail: jorge@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1006
+gidNumber: 1006
+homeDirectory: /home/jorge
+loginShell: /bin/bash
+
+dn: uid=matias,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: matias
+cn: Matias Lopez
+sn: Lopez
+givenName: Matias
+mail: matias@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1007
+gidNumber: 1007
+homeDirectory: /home/matias
+loginShell: /bin/bash
+
+dn: uid=emilio,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: emilio
+cn: Emilio Fernandez
+sn: Fernandez
+givenName: Emilio
+mail: emilio@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1008
+gidNumber: 1008
+homeDirectory: /home/emilio
+loginShell: /bin/bash
+
+dn: uid=pepe,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: pepe
+cn: Pepe Gonzalez
+sn: Gonzalez
+givenName: Pepe
+mail: pepe@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1009
+gidNumber: 1009
+homeDirectory: /home/pepe
+loginShell: /bin/bash
+
+dn: uid=pedro,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: pedro
+cn: Pedro Ruiz
+sn: Ruiz
+givenName: Pedro
+mail: pedro@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1010
+gidNumber: 1010
+homeDirectory: /home/pedro
+loginShell: /bin/bash
+
+dn: uid=paquito,ou=users,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+uid: paquito
+cn: Paquito Sanchez
+sn: Sanchez
+givenName: Paquito
+mail: paquito@example.com
+userPassword: {SSHA}rLTKrIJAEJKjFJGz3Zr3iU8D/abJKHbF
+uidNumber: 1011
+gidNumber: 1011
+homeDirectory: /home/paquito
+loginShell: /bin/bash

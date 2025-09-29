@@ -1,0 +1,44 @@
+{% extends "base/base_generic.html" %}
+{% load static %}
+
+{% block title %}Perfil — Mainly Labs{% endblock %}
+{% block subtitle %}Editar Perfil{% endblock %}
+
+{% block content %}
+<!-- Аватар -->
+<div style="text-align:center; margin-bottom:16px;">
+  <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'avatars/default.jpg' %}{% endif %}"
+       alt="{{ user.username }}"
+       class="avatar">
+</div>
+
+<!-- Форма -->
+<form method="post" novalidate enctype="multipart/form-data">
+  {% csrf_token %}
+
+  {% if form.non_field_errors %}
+    <div class="error">
+      {% for err in form.non_field_errors %}{{ err }}{% endfor %}
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    <div class="form-group">
+      {{ field }}
+      {% if field.errors %}
+        <div class="error">
+          {% for e in field.errors %}{{ e }}{% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <button class="btn" type="submit">Guardar cambios</button>
+</form>
+
+<div class="help">
+  <a href="{% url 'home' %}">← Volver al inicio</a>
+</div>
+{% endblock %}
+
+

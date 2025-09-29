@@ -1,0 +1,49 @@
+{% extends "base/base_form.html" %}
+
+{% block title %}Registro - Mainly Labs{% endblock %}
+
+{% block subtitle %}CREAR CUENTA{% endblock %}
+
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+
+  <!-- Nombre de usuario -->
+  <div class="form-group">
+    {{ form.username }}
+    {% for e in form.username.errors %}
+      <div class="error">{{ e }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Email -->
+<div class="form-group">
+  {{ form.email }}
+  {% for e in form.email.errors %}
+    <div class="error">{{ e }}</div>
+  {% endfor %}
+</div>
+
+  <!-- Contraseña -->
+  <div class="form-group">
+    {{ form.password1 }}
+    {% for e in form.password1.errors %}
+      <div class="error">{{ e }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Confirmar contraseña -->
+  <div class="form-group">
+    {{ form.password2 }}
+    {% for e in form.password2.errors %}
+      <div class="error">{{ e }}</div>
+    {% endfor %}
+  </div>
+
+  <!-- Submit button inside the form -->
+  <div class="card-footer">
+    <button type="submit" class="btn">Crear usuario</button>
+  </div>
+</form>
+{% endblock %}
+
