@@ -1,0 +1,89 @@
+name: ci-cd-azure
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: mainly-labs-musk
+
+jobs:
+  build-and-push:
+    name: Build and Push to ACR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Azure CLI - Get ACR login server
+        id: acr
+        run: |
+          az acr show --name ${{ secrets.ACR_NAME }} --query loginServer -o tsv > acr.txt
+          echo "login_server=$(cat acr.txt)" >> $GITHUB_OUTPUT
+
+      - name: az acr login
+        run: az acr login --name ${{ secrets.ACR_NAME }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.acr.outputs.login_server }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
+            ${{ steps.acr.outputs.login_server }}/${{ env.IMAGE_NAME }}:latest
+          file: ./Dockerfile
+          build-args: |
+            PORT=8000
+
+  deploy-webapp:
+    name: Deploy to Azure Web App for Containers
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.webapp-url }}
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Azure CLI - Configure WebApp to use ACR image
+        id: deploy
+        run: |
+          LOGIN_SERVER=$(az acr show --name ${{ secrets.ACR_NAME }} --query loginServer -o tsv)
+          IMAGE_TAG=sha-${{ github.sha }}
+          FULL_IMAGE="$LOGIN_SERVER/${{ env.IMAGE_NAME }}:$IMAGE_TAG"
+          az webapp config container set \
+            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --docker-custom-image-name $FULL_IMAGE \
+            --docker-registry-server-url https://$LOGIN_SERVER
+          # App settings
+          az webapp config appsettings set \
+            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --settings WEBSITES_PORT=8000 \
+                      DJANGO_SETTINGS_MODULE=project.settings \
+                      PYTHONUNBUFFERED=1
+          # Restart to pick changes
+          az webapp restart --name ${{ secrets.AZURE_WEBAPP_NAME }} --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
+          echo "webapp-url=https://${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net" >> $GITHUB_OUTPUT
+
