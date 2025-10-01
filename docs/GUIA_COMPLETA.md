@@ -135,7 +135,7 @@ docker-compose exec ldap ldapadd -x -D "cn=admin,dc=example,dc=com" -w InterNat 
 ```
 6) Ajustar rol de administrador (opcional)
 ```bash
-docker-compose exec web python /scripts/fix_admin_role.py
+docker-compose exec web python scripts/fix_admin_role.py
 ```
 7) Verificar estado
 ```bash
