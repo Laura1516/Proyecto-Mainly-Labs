@@ -119,11 +119,11 @@ cd <tu_repositorio>
 ```
 2) Variables de entorno (opcional)
 ```bash
-cp .env.example .env
+cp .env.example docker/.env
 ```
 3) Levantar servicios
 ```bash
-docker-compose up -d
+docker-compose -f docker/docker-compose.yml up -d
 ```
 4) Migraciones
 ```bash
