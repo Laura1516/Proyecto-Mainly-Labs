@@ -1,6 +1,5 @@
 # Guia completa: Despliegue, configuracion y operacion (Docker + LDAP + Django)
 
-Este documento unifica y reemplaza la documentacion anterior: `README-DOCKER.md`, `DOCKER_LDAP_SETUP_COMPLETO.md`, `INSTRUCCIONES-COMPAÑEROS.md`, `LDAP_SETUP.md`, `DOCUMENTACION_TECNICA_COMPLETA.md`, `RESUMEN_TRABAJO_19_SEPTIEMBRE_2025.md`.
 
 Indice
 - Introduccion
