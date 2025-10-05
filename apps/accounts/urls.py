@@ -49,5 +49,8 @@ urlpatterns = [
     # LDAP User Management (Admin only)
     path("ldap/create-user/", views.create_ldap_user, name="create_ldap_user"),
     path("ldap/list-users/", views.list_ldap_users, name="list_ldap_users"),
+
+    # Fichaje
+    path("fichaje/user_fichaje/", views.user_fichaje, name="user_fichaje"),
 ]
 

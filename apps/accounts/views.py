@@ -101,6 +101,10 @@ def tech_dashboard(request):
 def user_dashboard(request):
     return render(request, "dashboard/user_dashboard.html")
 
+@login_required
+def user_fichaje(request):
+    return render(request, "fichaje/user_fichaje.html")
+
 
 # Helper function to check if user is admin
 def is_admin(user):
