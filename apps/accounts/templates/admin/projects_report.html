@@ -1,0 +1,255 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Reporte de Proyectos — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  .header {
+    background: linear-gradient(180deg,#033c8c,#032b66) !important;
+  }
+  
+  .reports-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .filters-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  .projects-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .projects-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+  
+  .projects-table th,
+  .projects-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .projects-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    position: sticky;
+    top: 0;
+  }
+  
+  .projects-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+  
+  .project-name {
+    font-weight: 600;
+    color: #033c8c;
+  }
+  
+  .stat-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .badge-primary {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .badge-success {
+    background: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  .badge-warning {
+    background: #fff8e1;
+    color: #f57c00;
+  }
+  
+  .back-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  
+  .back-btn:hover {
+    background: #545b62;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .detail-btn {
+    background: #033c8c;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .detail-btn:hover {
+    background: #032b66;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .form-control {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+  }
+  
+  .btn-filter {
+    background: #033c8c;
+    color: white;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .btn-filter:hover {
+    background: #032b66;
+  }
+</style>
+
+<div class="reports-container">
+  <a href="{% url 'admin_reports_dashboard' %}" class="back-btn">
+    ← Volver a Reportes
+  </a>
+  
+  <h1 style="color: #033c8c; margin-bottom: 30px;">📂 Reporte de Proyectos</h1>
+  
+  <!-- Filtros -->
+  <div class="filters-card">
+    <h3 style="margin-bottom: 20px;">🔍 Filtros</h3>
+    <form method="get">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fecha_desde">Fecha Desde:</label>
+          <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" value="{{ fecha_desde }}">
+        </div>
+        <div class="form-group">
+          <label for="fecha_hasta">Fecha Hasta:</label>
+          <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" value="{{ fecha_hasta }}">
+        </div>
+        <div>
+          <button type="submit" class="btn-filter">Aplicar Filtros</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Tabla de Proyectos -->
+  <div class="projects-table-container">
+    <table class="projects-table">
+      <thead>
+        <tr>
+          <th>Proyecto</th>
+          <th>Descripción</th>
+          <th>Trabajadores</th>
+          <th>Total Fichajes</th>
+          <th>Horas Totales</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for proyecto in proyectos %}
+        <tr>
+          <td>
+            <div class="project-name">{{ proyecto.nombre }}</div>
+          </td>
+          <td>
+            <small class="text-muted">
+              {{ proyecto.descripcion|truncatechars:60|default:"Sin descripción" }}
+            </small>
+          </td>
+          <td>
+            <span class="stat-badge badge-primary">
+              {{ proyecto.total_trabajadores|default:0 }} personas
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-success">
+              {{ proyecto.total_registros|default:0 }} fichajes
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-warning">
+              {% if proyecto.total_horas %}
+                {{ proyecto.total_horas }}
+              {% else %}
+                0:00:00
+              {% endif %}
+            </span>
+          </td>
+          <td>
+            {% if proyecto.activo %}
+              <span class="stat-badge badge-success">Activo</span>
+            {% else %}
+              <span class="stat-badge" style="background: #ffebee; color: #c62828;">Inactivo</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'admin_project_detail' proyecto.id %}{% if fecha_desde or fecha_hasta %}?{% if fecha_desde %}fecha_desde={{ fecha_desde }}{% endif %}{% if fecha_hasta %}{% if fecha_desde %}&{% endif %}fecha_hasta={{ fecha_hasta }}{% endif %}{% endif %}" 
+               class="detail-btn">Ver Detalle</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted" style="padding: 40px;">
+            No se encontraron proyectos con los filtros aplicados
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  {% if proyectos %}
+  <div style="margin-top: 20px; text-align: center; color: #6c757d;">
+    <small>Total de {{ proyectos|length }} proyecto{{ proyectos|length|pluralize }}</small>
+  </div>
+  {% endif %}
+  
+</div>
+{% endblock %}

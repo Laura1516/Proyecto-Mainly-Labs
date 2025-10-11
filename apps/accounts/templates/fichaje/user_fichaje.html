@@ -63,49 +63,83 @@ Fichaje Diario — Mainly Labs
                     <p class="saludo mb-1">Hola, {{ user.first_name|default:user.username }}</p>
                     <p class="fecha">{{ today_date }}</p>
 
+                    <!-- Estado del fichaje -->
+                    {% if puede_fichar_entrada %}
                         <div class="estado estado-pendiente mb-3">
                             No has fichado aún
                         </div>
-                        <form method="post" action="#">
+                        <form method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="action" value="fichar_entrada">
                             <button type="submit" class="btn btn-success fichaje-btn mb-3">Fichar Entrada</button>
                         </form>
-                   
+                    {% elif puede_fichar_salida %}
                         <div class="estado estado-completo mb-3">
-                            Has fichado a las {{ entrada_hora }}
+                            Has fichado entrada a las {{ registro_hoy.hora_entrada|time:"H:i" }}
                         </div>
-                        <form method="post" action="#">
+                        <form method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="action" value="fichar_salida">
                             <button type="submit" class="btn btn-danger fichaje-btn mb-3">Fichar Salida</button>
                         </form>
+                    {% else %}
+                        <div class="estado estado-completo mb-3">
+                            Jornada completa: {{ registro_hoy.hora_entrada|time:"H:i" }} - {{ registro_hoy.hora_salida|time:"H:i" }}
+                            {% if registro_hoy.horas_trabajadas %}
+                                <br><small>Tiempo trabajado: {{ registro_hoy.horas_trabajadas }}</small>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if necesita_proyecto %}
+                        <div class="alert alert-warning" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>⚠️ Proyecto requerido:</strong> Debes seleccionar un proyecto antes de poder fichar entrada o salida.
+                        </div>
+                    {% endif %}
                    
+                    <!-- Formulario de proyecto y jornada -->
                     <form method="post" class="mb-4">
                         {% csrf_token %}
+                        <input type="hidden" name="action" value="actualizar_proyecto">
+                        
                         <div class="mb-3">
-                            <label class="form-label">Proyecto</label>
-                            <select class="form-select" name="proyecto" required>
+                            <label class="form-label">Proyecto <span class="text-danger">*</span></label>
+                            <select class="form-select {% if necesita_proyecto %}is-invalid{% endif %}" name="proyecto" required>
                                 <option value="">Seleccionar proyecto</option>
                                 {% for proyecto in proyectos %}
-                                    <option value="{{ proyecto.id }}">{{ proyecto.nombre }}</option>
+                                    <option value="{{ proyecto.id }}" 
+                                        {% if registro_hoy.proyecto and registro_hoy.proyecto.id == proyecto.id %}selected{% endif %}>
+                                        {{ proyecto.nombre }}
+                                    </option>
                                 {% endfor %}
                             </select>
+                            {% if necesita_proyecto %}
+                                <div class="invalid-feedback">
+                                    Este campo es obligatorio para poder fichar.
+                                </div>
+                            {% endif %}
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Jornada</label><br>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jornada" id="presencial" value="presencial" required>
+                                <input class="form-check-input" type="radio" name="jornada" id="presencial" value="presencial" 
+                                    {% if registro_hoy.jornada == 'presencial' %}checked{% endif %}>
                                 <label class="form-check-label" for="presencial">Presencial</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jornada" id="remoto" value="remoto">
+                                <input class="form-check-input" type="radio" name="jornada" id="remoto" value="remoto"
+                                    {% if registro_hoy.jornada == 'remoto' %}checked{% endif %}>
                                 <label class="form-check-label" for="remoto">Remoto</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="jornada" id="desplazamiento" value="desplazamiento">
+                                <input class="form-check-input" type="radio" name="jornada" id="desplazamiento" value="desplazamiento"
+                                    {% if registro_hoy.jornada == 'desplazamiento' %}checked{% endif %}>
                                 <label class="form-check-label" for="desplazamiento">Desplazamiento</label>
                             </div>
                         </div>
+                        
+                        <button type="submit" class="btn btn-primary">Actualizar Información</button>
                     </form>
 
                     <h6 class="mt-4">Historial de fichajes</h6>
@@ -124,10 +158,35 @@ Fichaje Diario — Mainly Labs
                                 {% for registro in registros %}
                                 <tr>
                                     <td>{{ registro.fecha|date:"d/m/y" }}</td>
-                                    <td>{{ registro.entrada|default:"-" }}</td>
-                                    <td>{{ registro.salida|default:"-" }}</td>
-                                    <td>{{ registro.horas|default:"-" }}</td>
-                                    <td>{{ registro.proyecto.nombre }}</td>
+                                    <td>
+                                        {% if registro.hora_entrada %}
+                                            {{ registro.hora_entrada|time:"H:i" }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if registro.hora_salida %}
+                                            {{ registro.hora_salida|time:"H:i" }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if registro.horas_trabajadas %}
+                                            {{ registro.horas_trabajadas }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if registro.proyecto %}
+                                            {{ registro.proyecto.nombre }}
+                                            <br><small class="text-muted">{{ registro.get_jornada_display }}</small>
+                                        {% else %}
+                                            <span class="text-muted">Sin asignar</span>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                                 {% empty %}
                                 <tr><td colspan="5" class="text-muted text-center">No hay registros aún</td></tr>

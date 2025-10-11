@@ -49,6 +49,16 @@ urlpatterns = [
     # LDAP User Management (Admin only)
     path("ldap/create-user/", views.create_ldap_user, name="create_ldap_user"),
     path("ldap/list-users/", views.list_ldap_users, name="list_ldap_users"),
+    
+    # Django User Management (Admin only)
+    path("django/list-users/", views.list_django_users, name="list_django_users"),
+    
+    # Admin Reporting (Admin only)
+    path("reports/", views.admin_reports_dashboard, name="admin_reports_dashboard"),
+    path("reports/projects/", views.admin_projects_report, name="admin_projects_report"),
+    path("reports/project/<int:project_id>/", views.admin_project_detail, name="admin_project_detail"),
+    path("reports/workers/", views.admin_workers_report, name="admin_workers_report"),
+    path("reports/worker/<int:user_id>/", views.admin_worker_detail, name="admin_worker_detail"),
 
     # Fichaje
     path("fichaje/user_fichaje/", views.user_fichaje, name="user_fichaje"),

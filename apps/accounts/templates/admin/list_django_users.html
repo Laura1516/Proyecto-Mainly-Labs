@@ -1,0 +1,236 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Usuarios Django — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  .header {
+    background: linear-gradient(180deg,#033c8c,#032b66) !important;
+  }
+  
+  .users-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin: 20px 0;
+  }
+  
+  .users-header {
+    background: #f8f9fa;
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .users-title {
+    margin: 0;
+    color: #033c8c;
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .users-stats {
+    color: #6c757d;
+    margin-top: 5px;
+  }
+  
+  .users-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .users-table th,
+  .users-table td {
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .users-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .users-table td {
+    font-size: 14px;
+    color: #495057;
+  }
+  
+  .users-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+  
+  .status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .status-active {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  
+  .role-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .role-admin {
+    background: #d1ecf1;
+    color: #0c5460;
+  }
+  
+  .role-hr {
+    background: #fff3cd;
+    color: #856404;
+  }
+  
+  .role-tech {
+    background: #d4edda;
+    color: #155724;
+  }
+  
+  .role-user {
+    background: #e2e3e5;
+    color: #383d41;
+  }
+  
+  .back-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #033c8c;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    transition: background 0.2s;
+  }
+  
+  .back-btn:hover {
+    background: #032b66;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+  }
+  
+  .empty-state h3 {
+    margin-bottom: 10px;
+    color: #495057;
+  }
+</style>
+
+<div class="container-fluid px-4">
+  <a href="{% url 'admin_dashboard' %}" class="back-btn">
+    ← Volver al Dashboard
+  </a>
+  
+  <div class="users-container">
+    <div class="users-header">
+      <h1 class="users-title">👥 Usuarios de Django</h1>
+      <div class="users-stats">
+        Total de usuarios: {{ total_users }}
+      </div>
+    </div>
+    
+    {% if users %}
+      <div class="table-responsive">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>Nombre Completo</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Permisos</th>
+              <th>Último Login</th>
+              <th>Fecha Registro</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td><strong>{{ user.username }}</strong></td>
+              <td>
+                {% if user.first_name or user.last_name %}
+                  {{ user.first_name }} {{ user.last_name }}
+                {% else %}
+                  <em>Sin nombre</em>
+                {% endif %}
+              </td>
+              <td>
+                {% if user.email %}
+                  {{ user.email }}
+                {% else %}
+                  <em>Sin email</em>
+                {% endif %}
+              </td>
+              <td>
+                <span class="role-badge role-{{ user.role }}">
+                  {{ user.role|capfirst }}
+                </span>
+              </td>
+              <td>
+                {% if user.is_active %}
+                  <span class="status-badge status-active">Activo</span>
+                {% else %}
+                  <span class="status-badge status-inactive">Inactivo</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if user.is_superuser %}
+                  <span class="status-badge status-active">Superusuario</span>
+                {% elif user.is_staff %}
+                  <span class="status-badge" style="background: #cce5ff; color: #004085;">Staff</span>
+                {% else %}
+                  <span class="status-badge" style="background: #e2e3e5; color: #383d41;">Usuario</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if user.last_login %}
+                  {{ user.last_login|date:"d/m/Y H:i" }}
+                {% else %}
+                  <em>Nunca</em>
+                {% endif %}
+              </td>
+              <td>{{ user.date_joined|date:"d/m/Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="empty-state">
+        <h3>No hay usuarios registrados</h3>
+        <p>Aún no hay usuarios en la base de datos de Django.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

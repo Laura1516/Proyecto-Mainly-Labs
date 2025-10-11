@@ -1,0 +1,341 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}{{ proyecto.nombre }} - Detalle de Proyecto — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  .header {
+    background: linear-gradient(180deg,#033c8c,#032b66) !important;
+  }
+  
+  .project-detail-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .project-header {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  .project-title {
+    color: #033c8c;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  
+  .project-description {
+    color: #6c757d;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  .workers-table-container,
+  .records-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  
+  .table-header {
+    background: #f8f9fa;
+    padding: 20px 25px;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .table-title {
+    color: #033c8c;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+  
+  .data-table th,
+  .data-table td {
+    padding: 12px 25px;
+    text-align: left;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .data-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .data-table tbody tr:hover {
+    background: #f8f9fa;
+  }
+  
+  .worker-name {
+    font-weight: 600;
+    color: #033c8c;
+  }
+  
+  .stat-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .badge-total {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .badge-presencial {
+    background: #e8f5e8;
+    color: #2e7d32;
+  }
+  
+  .badge-remoto {
+    background: #fff3e0;
+    color: #f57c00;
+  }
+  
+  .badge-desplazamiento {
+    background: #f3e5f5;
+    color: #7b1fa2;
+  }
+  
+  .back-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  
+  .back-btn:hover {
+    background: #545b62;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .filters-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 15px;
+    align-items: end;
+  }
+  
+  .form-group label {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  .form-control {
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+  }
+  
+  .btn-filter {
+    background: #033c8c;
+    color: white;
+    padding: 9px 20px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .btn-filter:hover {
+    background: #032b66;
+  }
+</style>
+
+<div class="project-detail-container">
+  <a href="{% url 'admin_projects_report' %}" class="back-btn">
+    ← Volver a Proyectos
+  </a>
+  
+  <!-- Cabecera del Proyecto -->
+  <div class="project-header">
+    <h1 class="project-title">📂 {{ proyecto.nombre }}</h1>
+    {% if proyecto.descripcion %}
+      <p class="project-description">{{ proyecto.descripcion }}</p>
+    {% endif %}
+  </div>
+  
+  <!-- Filtros -->
+  <div class="filters-card">
+    <h3 style="margin-bottom: 20px;">🔍 Filtros</h3>
+    <form method="get">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fecha_desde">Fecha Desde:</label>
+          <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" value="{{ fecha_desde }}">
+        </div>
+        <div class="form-group">
+          <label for="fecha_hasta">Fecha Hasta:</label>
+          <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" value="{{ fecha_hasta }}">
+        </div>
+        <div>
+          <button type="submit" class="btn-filter">Aplicar Filtros</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- Trabajadores del Proyecto -->
+  <div class="workers-table-container">
+    <div class="table-header">
+      <h2 class="table-title">👥 Trabajadores Asignados</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Trabajador</th>
+          <th>Total Horas</th>
+          <th>Días Trabajados</th>
+          <th>Horas Presencial</th>
+          <th>Horas Remoto</th>
+          <th>Horas Desplazamiento</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trabajador in trabajadores_stats %}
+        <tr>
+          <td>
+            <div class="worker-name">{{ trabajador.first_name }} {{ trabajador.last_name }}</div>
+            <small class="text-muted">@{{ trabajador.username }} - {{ trabajador.get_role_display }}</small>
+          </td>
+          <td>
+            <span class="stat-badge badge-total">
+              {% if trabajador.total_horas %}{{ trabajador.total_horas }}{% else %}0:00:00{% endif %}
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-total">
+              {{ trabajador.total_dias|default:0 }} días
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-presencial">
+              {% if trabajador.horas_presencial %}{{ trabajador.horas_presencial }}{% else %}0:00:00{% endif %}
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-remoto">
+              {% if trabajador.horas_remoto %}{{ trabajador.horas_remoto }}{% else %}0:00:00{% endif %}
+            </span>
+          </td>
+          <td>
+            <span class="stat-badge badge-desplazamiento">
+              {% if trabajador.horas_desplazamiento %}{{ trabajador.horas_desplazamiento }}{% else %}0:00:00{% endif %}
+            </span>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted" style="padding: 40px;">
+            No hay trabajadores asignados a este proyecto en el período seleccionado
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Registros Recientes -->
+  <div class="records-table-container">
+    <div class="table-header">
+      <h2 class="table-title">📊 Registros Recientes</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Trabajador</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Horas</th>
+          <th>Jornada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for registro in registros %}
+        <tr>
+          <td>{{ registro.fecha|date:"d/m/Y" }}</td>
+          <td>
+            <div class="worker-name">{{ registro.usuario.first_name }} {{ registro.usuario.last_name }}</div>
+            <small class="text-muted">@{{ registro.usuario.username }}</small>
+          </td>
+          <td>
+            {% if registro.hora_entrada %}
+              {{ registro.hora_entrada|time:"H:i" }}
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if registro.hora_salida %}
+              {{ registro.hora_salida|time:"H:i" }}
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if registro.horas_trabajadas %}
+              <span class="stat-badge badge-total">{{ registro.horas_trabajadas }}</span>
+            {% else %}
+              <span class="text-muted">-</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if registro.jornada == 'presencial' %}
+              <span class="stat-badge badge-presencial">Presencial</span>
+            {% elif registro.jornada == 'remoto' %}
+              <span class="stat-badge badge-remoto">Remoto</span>
+            {% elif registro.jornada == 'desplazamiento' %}
+              <span class="stat-badge badge-desplazamiento">Desplazamiento</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted" style="padding: 40px;">
+            No hay registros para este proyecto en el período seleccionado
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+</div>
+{% endblock %}
