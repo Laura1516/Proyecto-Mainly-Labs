@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load time_filters %}
 
 {% block title %}{{ proyecto.nombre }} - Detalle de Proyecto — Mainly Labs{% endblock %}
 
@@ -236,7 +237,7 @@
           </td>
           <td>
             <span class="stat-badge badge-total">
-              {% if trabajador.total_horas %}{{ trabajador.total_horas }}{% else %}0:00:00{% endif %}
+              {% if trabajador.total_horas %}{{ trabajador.total_horas|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
@@ -246,17 +247,17 @@
           </td>
           <td>
             <span class="stat-badge badge-presencial">
-              {% if trabajador.horas_presencial %}{{ trabajador.horas_presencial }}{% else %}0:00:00{% endif %}
+              {% if trabajador.horas_presencial %}{{ trabajador.horas_presencial|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
             <span class="stat-badge badge-remoto">
-              {% if trabajador.horas_remoto %}{{ trabajador.horas_remoto }}{% else %}0:00:00{% endif %}
+              {% if trabajador.horas_remoto %}{{ trabajador.horas_remoto|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
             <span class="stat-badge badge-desplazamiento">
-              {% if trabajador.horas_desplazamiento %}{{ trabajador.horas_desplazamiento }}{% else %}0:00:00{% endif %}
+              {% if trabajador.horas_desplazamiento %}{{ trabajador.horas_desplazamiento|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
         </tr>
@@ -311,7 +312,7 @@
           </td>
           <td>
             {% if registro.horas_trabajadas %}
-              <span class="stat-badge badge-total">{{ registro.horas_trabajadas }}</span>
+              <span class="stat-badge badge-total">{{ registro.horas_trabajadas|format_duration }}</span>
             {% else %}
               <span class="text-muted">-</span>
             {% endif %}

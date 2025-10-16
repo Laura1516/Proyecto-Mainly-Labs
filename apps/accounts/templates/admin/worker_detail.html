@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load time_filters %}
 
 {% block title %}{{ trabajador.first_name }} {{ trabajador.last_name }} - Detalle de Trabajador — Mainly Labs{% endblock %}
 
@@ -275,7 +276,7 @@
   <!-- Estadísticas Rápidas -->
   <div class="stats-grid">
     <div class="stat-card">
-      <h3>{{ stats.total_horas|default:"0:00:00" }}</h3>
+      <h3>{{ stats.total_horas|format_duration|default:"0:00:00" }}</h3>
       <p>Total Horas Trabajadas</p>
     </div>
     <div class="stat-card">
@@ -335,7 +336,7 @@
           </td>
           <td>
             <span class="stat-badge badge-total">
-              {% if proyecto.total_horas %}{{ proyecto.total_horas }}{% else %}0:00:00{% endif %}
+              {% if proyecto.total_horas %}{{ proyecto.total_horas|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
@@ -345,17 +346,17 @@
           </td>
           <td>
             <span class="stat-badge badge-presencial">
-              {% if proyecto.horas_presencial %}{{ proyecto.horas_presencial }}{% else %}0:00:00{% endif %}
+              {% if proyecto.horas_presencial %}{{ proyecto.horas_presencial|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
             <span class="stat-badge badge-remoto">
-              {% if proyecto.horas_remoto %}{{ proyecto.horas_remoto }}{% else %}0:00:00{% endif %}
+              {% if proyecto.horas_remoto %}{{ proyecto.horas_remoto|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>
             <span class="stat-badge badge-desplazamiento">
-              {% if proyecto.horas_desplazamiento %}{{ proyecto.horas_desplazamiento }}{% else %}0:00:00{% endif %}
+              {% if proyecto.horas_desplazamiento %}{{ proyecto.horas_desplazamiento|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
         </tr>
@@ -409,7 +410,7 @@
           </td>
           <td>
             {% if registro.horas_trabajadas %}
-              <span class="stat-badge badge-total">{{ registro.horas_trabajadas }}</span>
+              <span class="stat-badge badge-total">{{ registro.horas_trabajadas|format_duration }}</span>
             {% else %}
               <span class="text-muted">-</span>
             {% endif %}

@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load time_filters %}
 
 {% block title %}Reporte de Proyectos — Mainly Labs{% endblock %}
 
@@ -216,7 +217,7 @@
           <td>
             <span class="stat-badge badge-warning">
               {% if proyecto.total_horas %}
-                {{ proyecto.total_horas }}
+                {{ proyecto.total_horas|format_duration }}
               {% else %}
                 0:00:00
               {% endif %}

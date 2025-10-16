@@ -1,5 +1,6 @@
 {% extends "base/base_dashboard.html" %}
 {% load static %}
+{% load time_filters %}
 
 {% block title %}Reporte de Trabajadores — Mainly Labs{% endblock %}
 
@@ -310,7 +311,7 @@
           </td>
           <td>
             <span class="stat-badge badge-total">
-              {% if trabajador.total_horas %}{{ trabajador.total_horas }}{% else %}0:00:00{% endif %}
+              {% if trabajador.total_horas %}{{ trabajador.total_horas|format_duration }}{% else %}0:00:00{% endif %}
             </span>
           </td>
           <td>

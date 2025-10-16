@@ -491,38 +491,51 @@ def admin_project_detail(request, project_id):
     fecha_desde = request.GET.get('fecha_desde')
     fecha_hasta = request.GET.get('fecha_hasta')
     
-    filtros = Q(proyecto=proyecto)
+    filtros_registros = Q(proyecto=proyecto)
+    fecha_desde_obj = None
+    fecha_hasta_obj = None
     
     if fecha_desde:
         try:
             fecha_desde_obj = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
-            filtros &= Q(fecha__gte=fecha_desde_obj)
+            filtros_registros &= Q(fecha__gte=fecha_desde_obj)
         except ValueError:
             pass
     
     if fecha_hasta:
         try:
             fecha_hasta_obj = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
-            filtros &= Q(fecha__lte=fecha_hasta_obj)
+            filtros_registros &= Q(fecha__lte=fecha_hasta_obj)
         except ValueError:
             pass
+    
+    # Construir filtros para anotaciones de CustomUser
+    filtro_base = Q(fichajes__proyecto=proyecto)
+    if fecha_desde_obj:
+        filtro_base &= Q(fichajes__fecha__gte=fecha_desde_obj)
+    if fecha_hasta_obj:
+        filtro_base &= Q(fichajes__fecha__lte=fecha_hasta_obj)
     
     # Trabajadores en este proyecto con sus estadísticas
     trabajadores_stats = CustomUser.objects.filter(
         fichajes__proyecto=proyecto
     ).annotate(
-        total_horas=Sum('fichajes__horas_trabajadas', filter=filtros),
-        total_dias=Count('fichajes', filter=filtros),
+        total_horas=Sum('fichajes__horas_trabajadas', 
+                       filter=filtro_base & Q(fichajes__horas_trabajadas__isnull=False)),
+        total_dias=Count('fichajes', filter=filtro_base),
         horas_presencial=Sum('fichajes__horas_trabajadas', 
-                           filter=filtros & Q(fichajes__jornada='presencial')),
+                           filter=filtro_base & Q(fichajes__jornada='presencial') & 
+                                 Q(fichajes__horas_trabajadas__isnull=False)),
         horas_remoto=Sum('fichajes__horas_trabajadas', 
-                        filter=filtros & Q(fichajes__jornada='remoto')),
+                        filter=filtro_base & Q(fichajes__jornada='remoto') & 
+                               Q(fichajes__horas_trabajadas__isnull=False)),
         horas_desplazamiento=Sum('fichajes__horas_trabajadas', 
-                               filter=filtros & Q(fichajes__jornada='desplazamiento'))
+                               filter=filtro_base & Q(fichajes__jornada='desplazamiento') & 
+                                     Q(fichajes__horas_trabajadas__isnull=False))
     ).distinct().order_by('-total_horas')
     
     # Registros detallados del proyecto
-    registros = RegistroFichaje.objects.filter(filtros).select_related(
+    registros = RegistroFichaje.objects.filter(filtros_registros).select_related(
         'usuario', 'proyecto'
     ).order_by('-fecha', '-hora_entrada')[:50]  # Últimos 50 registros
     
@@ -607,53 +620,68 @@ def admin_worker_detail(request, user_id):
     fecha_desde = request.GET.get('fecha_desde')
     fecha_hasta = request.GET.get('fecha_hasta')
     
-    filtros = Q(usuario=trabajador)
+    filtros_registros = Q(usuario=trabajador)
+    fecha_desde_obj = None
+    fecha_hasta_obj = None
     
     if fecha_desde:
         try:
             fecha_desde_obj = datetime.strptime(fecha_desde, '%Y-%m-%d').date()
-            filtros &= Q(fecha__gte=fecha_desde_obj)
+            filtros_registros &= Q(fecha__gte=fecha_desde_obj)
         except ValueError:
             pass
     
     if fecha_hasta:
         try:
             fecha_hasta_obj = datetime.strptime(fecha_hasta, '%Y-%m-%d').date()
-            filtros &= Q(fecha__lte=fecha_hasta_obj)
+            filtros_registros &= Q(fecha__lte=fecha_hasta_obj)
         except ValueError:
             pass
+    
+    # Construir filtros para anotaciones de Proyecto
+    filtro_base = Q(registrofichaje__usuario=trabajador)
+    if fecha_desde_obj:
+        filtro_base &= Q(registrofichaje__fecha__gte=fecha_desde_obj)
+    if fecha_hasta_obj:
+        filtro_base &= Q(registrofichaje__fecha__lte=fecha_hasta_obj)
     
     # Proyectos del trabajador con estadísticas
     proyectos_stats = Proyecto.objects.filter(
         registrofichaje__usuario=trabajador
     ).annotate(
-        total_horas=Sum('registrofichaje__horas_trabajadas', filter=filtros),
-        total_dias=Count('registrofichaje', filter=filtros),
+        total_horas=Sum('registrofichaje__horas_trabajadas', 
+                       filter=filtro_base & Q(registrofichaje__horas_trabajadas__isnull=False)),
+        total_dias=Count('registrofichaje', filter=filtro_base),
         horas_presencial=Sum('registrofichaje__horas_trabajadas', 
-                           filter=filtros & Q(registrofichaje__jornada='presencial')),
+                           filter=filtro_base & Q(registrofichaje__jornada='presencial') & 
+                                 Q(registrofichaje__horas_trabajadas__isnull=False)),
         horas_remoto=Sum('registrofichaje__horas_trabajadas', 
-                        filter=filtros & Q(registrofichaje__jornada='remoto')),
+                        filter=filtro_base & Q(registrofichaje__jornada='remoto') & 
+                               Q(registrofichaje__horas_trabajadas__isnull=False)),
         horas_desplazamiento=Sum('registrofichaje__horas_trabajadas', 
-                               filter=filtros & Q(registrofichaje__jornada='desplazamiento'))
+                               filter=filtro_base & Q(registrofichaje__jornada='desplazamiento') & 
+                                     Q(registrofichaje__horas_trabajadas__isnull=False))
     ).distinct().order_by('-total_horas')
     
     # Registros detallados del trabajador (horarios diarios)
-    registros = RegistroFichaje.objects.filter(filtros).select_related(
+    registros = RegistroFichaje.objects.filter(filtros_registros).select_related(
         'proyecto'
     ).order_by('-fecha')[:30]  # Últimos 30 días
     
     # Estadísticas generales
-    stats_generales = RegistroFichaje.objects.filter(filtros).aggregate(
+    stats_generales = RegistroFichaje.objects.filter(
+        filtros_registros & Q(horas_trabajadas__isnull=False)
+    ).aggregate(
         total_horas=Sum('horas_trabajadas'),
         total_dias=Count('id'),
-        promedio_horas_dia=Avg('horas_trabajadas')
+        total_proyectos=Count('proyecto', distinct=True)
     )
     
     context = {
         'trabajador': trabajador,
         'proyectos_stats': proyectos_stats,
         'registros': registros,
-        'stats_generales': stats_generales,
+        'stats': stats_generales,
         'fecha_desde': fecha_desde,
         'fecha_hasta': fecha_hasta,
     }
