@@ -1,6 +1,6 @@
 from django.db import models
-from apps.accounts.models import CustomUser
-from apps.projects_manager.models import Project
+from apps.hr.models import Employee
+from apps.projects.models import Project
 
 # Create your models here.
 class Task(models.Model):
@@ -15,7 +15,7 @@ class Task(models.Model):
     created_by = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
