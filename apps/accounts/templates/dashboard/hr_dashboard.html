@@ -24,7 +24,7 @@
   /* QUICK LINKS (chips) */
   .quick-links {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 18px;
   }
@@ -145,6 +145,7 @@
 <div class="quick-links" role="navigation" aria-label="accesos rápidos HR">
   <a class="quick-link" href="#">➕ Alta empleado</a>
   <a class="quick-link" href="#">❌ Baja empleado</a>
+  <a class="quick-link" href="{% url 'user_fichaje' %}">🕒 Fichaje</a>
   <a class="quick-link" href="#">🌴 Vacaciones</a>
   <a class="quick-link" href="#">📅 Convocar reunión</a>
   <a class="quick-link" href="#">📝 Evaluación</a>

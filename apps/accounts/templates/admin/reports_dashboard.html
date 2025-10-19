@@ -1,0 +1,221 @@
+{% extends "base/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Dashboard de Reportes — Mainly Labs{% endblock %}
+
+{% block content %}
+<style>
+  .header {
+    background: linear-gradient(180deg,#033c8c,#032b66) !important;
+  }
+  
+  .reports-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #033c8c;
+    margin-bottom: 10px;
+  }
+  
+  .stat-label {
+    color: #6c757d;
+    font-weight: 500;
+  }
+  
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .report-card {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+  }
+  
+  .report-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .report-icon {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  .report-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #033c8c;
+    margin-bottom: 10px;
+  }
+  
+  .report-description {
+    color: #6c757d;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  
+  .report-button {
+    background: #033c8c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  
+  .report-button:hover {
+    background: #032b66;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .back-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  
+  .back-btn:hover {
+    background: #545b62;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .activity-list {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 20px;
+  }
+  
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .activity-item:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<div class="reports-container">
+  <a href="{% url 'admin_dashboard' %}" class="back-btn">
+    ← Volver al Dashboard
+  </a>
+  
+  <h1 style="color: #033c8c; margin-bottom: 30px;">📊 Dashboard de Reportes</h1>
+  
+  <!-- Estadísticas Generales -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number">{{ total_proyectos }}</div>
+      <div class="stat-label">Proyectos Activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ total_usuarios_activos }}</div>
+      <div class="stat-label">Usuarios Activos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ total_registros_mes }}</div>
+      <div class="stat-label">Fichajes (30 días)</div>
+    </div>
+  </div>
+  
+  <!-- Reportes Principales -->
+  <div class="reports-grid">
+    <div class="report-card">
+      <div class="report-icon">📂</div>
+      <div class="report-title">Reporte de Proyectos</div>
+      <div class="report-description">
+        Análisis completo de todos los proyectos, horas trabajadas por proyecto y trabajadores asignados.
+      </div>
+      <a href="{% url 'admin_projects_report' %}" class="report-button">Ver Reporte</a>
+    </div>
+    
+    <div class="report-card">
+      <div class="report-icon">👥</div>
+      <div class="report-title">Reporte de Trabajadores</div>
+      <div class="report-description">
+        Estadísticas de productividad, horas trabajadas y análisis de patrones de trabajo por empleado.
+      </div>
+      <a href="{% url 'admin_workers_report' %}" class="report-button">Ver Reporte</a>
+    </div>
+  </div>
+  
+  <!-- Proyectos Más Activos -->
+  {% if proyectos_activos %}
+  <div class="activity-list">
+    <h3 style="color: #033c8c; margin-bottom: 20px;">🔥 Proyectos Más Activos (30 días)</h3>
+    {% for proyecto in proyectos_activos %}
+    <div class="activity-item">
+      <div>
+        <strong>{{ proyecto.nombre }}</strong>
+        <br><small class="text-muted">{{ proyecto.descripcion|truncatechars:50 }}</small>
+      </div>
+      <div>
+        <span class="badge" style="background: #033c8c; color: white; padding: 5px 10px; border-radius: 15px;">
+          {{ proyecto.num_registros }} fichajes
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <!-- Usuarios Más Activos -->
+  {% if usuarios_activos %}
+  <div class="activity-list">
+    <h3 style="color: #033c8c; margin-bottom: 20px;">⭐ Usuarios Más Activos (30 días)</h3>
+    {% for usuario in usuarios_activos %}
+    <div class="activity-item">
+      <div>
+        <strong>{{ usuario.first_name }} {{ usuario.last_name }}</strong>
+        <br><small class="text-muted">@{{ usuario.username }} - {{ usuario.get_role_display }}</small>
+      </div>
+      <div>
+        <span class="badge" style="background: #28a745; color: white; padding: 5px 10px; border-radius: 15px;">
+          {{ usuario.num_fichajes }} fichajes
+        </span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+</div>
+{% endblock %}

@@ -138,7 +138,15 @@ docker-compose exec web python scripts/fix_admin_role.py
 ```
 7) Verificar estado
 ```bash
-docker-compose ps
+docker-compose -f docker/docker-compose.yml ps
+```
+
+**Nota importante:** Todos los comandos de Docker Compose deben incluir `-f docker/docker-compose.yml` porque el archivo está en el subdirectorio `docker/`. 
+
+**Alternativa práctica:** Crear un alias para simplicidad:
+```bash
+alias dc='docker-compose -f docker/docker-compose.yml'
+# Ahora puedes usar: dc ps, dc up -d, dc logs web, etc.
 ```
 
 Servicios Docker: detalle, redes y volumenes
@@ -173,20 +181,26 @@ Accesos y credenciales de ejemplo
 
 Operacion diaria (comandos utiles)
 ```bash
+# Alias recomendado para simplicidad
+alias dc='docker-compose -f docker/docker-compose.yml'
+
 # Estado y logs
-docker-compose ps
-docker-compose logs web
-docker-compose logs ldap
-docker-compose logs -f web
+dc ps
+dc logs web
+dc logs ldap
+dc logs -f web
+
 # Ciclo de vida
-docker-compose down
-docker-compose restart web
-docker-compose build && docker-compose up -d
+dc down
+dc restart web
+dc build && dc up -d
+
 # Base de datos
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
+dc exec web python manage.py migrate
+dc exec web python manage.py createsuperuser
+
 # Pruebas rapidas
-docker-compose exec web python test_ldap_auth.py
+dc exec web python test_ldap_auth.py
 ```
 
 Variables de entorno: referencia completa y ejemplos

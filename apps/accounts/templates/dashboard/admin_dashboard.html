@@ -24,7 +24,7 @@
   /* QUICK LINKS (chips) */
   .quick-links {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 18px;
   }
@@ -144,9 +144,10 @@
 <!-- CHIPS -->
 <div class="quick-links" role="navigation" aria-label="accesos rápidos admin">
   <a class="quick-link" href="{% url 'create_ldap_user' %}">➕ Crear usuario</a>
-  <a class="quick-link" href="{% url 'list_ldap_users' %}">👥 Ver usuarios</a>
-  <a class="quick-link" href="#">📂 Crear proyecto</a>
-  <a class="quick-link" href="#">📊 Ver KPIs</a>
+  <a class="quick-link" href="{% url 'list_django_users' %}">👥 Ver usuarios</a>
+  <a class="quick-link" href="{% url 'user_fichaje' %}">🕒 Fichaje</a>
+  <a class="quick-link" href="{% url 'admin_reports_dashboard' %}">📊 Reportes</a>
+  <a class="quick-link" href="#">� Crear proyecto</a>
   <a class="quick-link" href="#">⚙️ Configuración</a>
 </div>
 
@@ -202,8 +203,9 @@
 <section class="cards" aria-label="quick cards admin">
   <div class="card">
     <div class="card-header"><span class="icon">👥</span><h3>Gestión de usuarios</h3></div>
-    <a href="{% url 'create_ldap_user' %}">➕ Crear usuario</a>
+    <a href="{% url 'list_django_users' %}">👥 Ver usuarios Django</a>
     <a href="{% url 'list_ldap_users' %}">👥 Ver usuarios LDAP</a>
+    <a href="{% url 'create_ldap_user' %}">➕ Crear usuario LDAP</a>
     <a href="#">🔑 Asignar roles</a>
     <a href="#">🚫 Activar/Desactivar</a>
   </div>
